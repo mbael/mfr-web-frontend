@@ -14,27 +14,32 @@
 <div class="container-fluid">
   <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
     <div class="panel panel-default">
+      <!-- header -->
       <div class="panel-heading">
         <h3 class="panel-title">{{ $t('login.title') }}</h3>
       </div>
       <div class="panel-body">
+        <!-- email -->
         <div class="input-group">
           <span class="input-group-addon" id="basic-addon1">
             <i class="fa fa-envelope-o" aria-hidden="true"></i>
           </span>
-          <input v-model="form.email" type="text" class="form-control" placeholder="{{ $t('login.email') }}" aria-describedby="basic-addon1">
+          <input v-model="email" type="text" class="form-control" placeholder="{{ $t('login.email') }}" aria-describedby="basic-addon1">
         </div>
+        <!-- password -->
         <div class="input-group">
           <span class="input-group-addon" id="basic-addon1">
             <i class="fa fa-key" aria-hidden="true"></i>
           </span>
-          <input v-model="form.password" type="password" class="form-control" placeholder="{{ $t('login.password') }}" aria-describedby="basic-addon1">
+          <input v-model="password" type="password" class="form-control" placeholder="{{ $t('login.password') }}" aria-describedby="basic-addon1">
         </div>
       </div>
       <div class="panel-footer">
+        <!-- login button -->
         <div class="btn-group" role="group" aria-label="...">
-          <button type="button" class="btn btn-default pull-right" @click="sendForm">{{ $t('login.button') }}</button>
+          <button type="button" class="btn btn-default pull-right" @click="login">{{ $t('login.button') }}</button>
         </div>
+        <!-- reset password -->
         <p v-link="'reset_password'" class="pull-right text-info text-right">{{ $t('login.forgot_password') }}</p>
         <div class="clearfix"></div>
       </div>
@@ -52,13 +57,11 @@ import auth from '../../services/authentication.js';
 export default {
   data() {
     return {
-      form: {
-        email: '',
-        password: '',
-      },
+      email: '',
+      password: '',
       alertState: {
-        success: false,
         error: false,
+        success: false,
       },
     };
   },
@@ -66,18 +69,25 @@ export default {
     alert, auth,
   },
   methods: {
-    sendForm: function sendLoginForm() {
-      const self = this;
+    login: function login() {
+      const router = this.$router;
+      /* store form data */
+      const userForm = {
+        email: this.email,
+        password: this.password,
+      };
 
-      auth.login(this.$http, this.form)
+      auth
+        .login(this.$http, userForm)
         .then(() => {
-          self.$router.go({
-            name: 'Runs',
-          });
+          // redirect to runs component
+          setTimeout(() => {
+            router.go({
+              name: 'Runs',
+            });
+          }, 20);
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => { this.error = error; });
     },
   },
 };

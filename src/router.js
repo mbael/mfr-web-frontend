@@ -6,9 +6,8 @@ import Runs from './components/runs/index.vue';
 import Details from './components/runs/details.vue';
 import Profile from './components/user/profile.vue';
 import Settings from './components/user/settings.vue';
-
-import user from './services/user.js';
-import auth from './services/authentication.js';
+import Auth from './services/authentication.js';
+import User from './services/user.js';
 
 export default function ConfigRouter(routr) {
   const router = routr;
@@ -64,9 +63,15 @@ export default function ConfigRouter(routr) {
     },
   });
 
-  router.beforeEach((transition) => {
-    user.getProfile(router.app.$http);
-    auth.checkAuth();
-    transition.next();
+  router.beforeEach(({ next }) => {
+    if (Auth.checkState()) {
+      User
+        .getData(router.app.$http)
+        .then((response) => new Promise((resolve) => {
+          Auth.data = response.body;
+          resolve();
+        }));
+    }
+    return next();
   });
 }

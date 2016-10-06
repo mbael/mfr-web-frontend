@@ -1,7 +1,6 @@
 export default {
-  user: {
-    authenticated: false,
-  },
+  authenticated: false,
+  data: false,
   login: function login(context, credentials) {
     return new Promise((resolve, reject) => {
       context
@@ -9,8 +8,10 @@ export default {
         .then((response) => {
           const token = response.body.access_token;
 
+          /* set authenticated status true */
           localStorage.setItem('access_token', token);
-          this.user.authenticated = true;
+          this.authenticated = true;
+
           resolve();
         })
         .catch((response) => {
@@ -21,17 +22,17 @@ export default {
   logout: function logOut() {
     localStorage.removeItem('access_token');
 
-    this.user.authenticated = false;
+    this.authenticated = false;
   },
-  checkAuth: function checkAuth() {
+  checkState: function checkState() {
     const jwt = localStorage.getItem('access_token');
 
     if (jwt) {
-      this.user.authenticated = true;
+      this.authenticated = true;
       return true;
     }
 
-    this.user.authenticated = false;
+    this.authenticated = false;
     return false;
   },
 };

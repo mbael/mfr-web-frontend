@@ -34,9 +34,9 @@
         <!-- Profile -->
         <ul v-if="user.authenticated" class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ logged_user.first_name }} <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.data.first_name }} <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a v-link="{ name: 'Profile', params: { userId: logged_user.user_id } }">{{ $t('header.user.profile') }}</a></li>
+            <li><a v-link="{ name: 'Profile', params: { userId: user.data.user_id } }">{{ $t('header.user.profile') }}</a></li>
             <li><a v-link="{ name: 'Settings' }">{{ $t('header.user.settings') }}</a></li>
             <li role="separator" class="divider"></li>
             <li><a @click="logout">{{ $t('header.user.logout') }}</a></li>
@@ -55,7 +55,6 @@ import {
   typeahead,
 } from 'vue-strap';
 import auth from '../../services/authentication.js';
-// import user from '../../services/user.js';
 
 export default {
   data() {
@@ -66,8 +65,7 @@ export default {
       // its initial state.
       msg: 'Hello World!',
       runs: ['Mór Fit Run', 'Sziget Fit Run'],
-      user: auth.user,
-      logged_user: '',
+      user: auth,
     };
   },
   components: {
@@ -81,17 +79,6 @@ export default {
       auth.logout();
     },
   },
-  /*activate: function act(done) {
-    user
-      .getProfile(this.$http)
-      .then((account) => {
-        this.logged_user = account;
-        done();
-      })
-      .catch(() => {
-        done();
-      });
-  },*/
 };
 </script>
 

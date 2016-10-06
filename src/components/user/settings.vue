@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import user from '../../services/user.js';
 
 export default {
   data() {
@@ -42,17 +41,6 @@ export default {
       msg: 'Hello World!',
       user: '',
     };
-  },
-  activate: function init(done) {
-    user
-      .getData()
-      .then((usr) => {
-        this.user = usr;
-        done();
-      })
-      .catch(() => {
-        done();
-      });
   },
 };
 </script>

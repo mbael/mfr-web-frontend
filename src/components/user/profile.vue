@@ -18,7 +18,6 @@
 </div>
 </template>
 <script>
-import user from '../../services/user.js';
 
 export default {
   data() {
@@ -29,16 +28,6 @@ export default {
       // its initial state.
       user: '',
     };
-  },
-  activate: function act(done) {
-    user.getData(this.$http)
-      .then((account) => {
-        this.logged_user = account;
-        done();
-      })
-      .catch(() => {
-        done();
-      });
   },
 };
 </script>
