@@ -70,7 +70,11 @@ export default function ConfigRouter(routr) {
         .then((response) => new Promise((resolve) => {
           Auth.data = response.body;
           resolve();
-        }));
+        }))
+        .catch(() => {
+          Auth.authenticated = false;
+          localStorage.setItem('access_token', null);
+        });
     }
     return next();
   });
