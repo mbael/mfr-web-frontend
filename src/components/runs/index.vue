@@ -1,9 +1,10 @@
 <template>
 <div class="col-xs-12 col-xs-offset-0 col-sm-12 col-xs-offset-0"><h1>{{ $t('runs.title') }}</h1></div>
-<map style="width: 100%; height: 80%; min-height: 400px;" class="col-xs-12 col-xs-offset-0 col-sm-12 col-xs-offset-0" :center="{
-  lat: 1.38, 
-  lng: 103.8}" :zoom="12">
-</map>
+    <map style="width: 100%; height: 80%; min-height: 400px;" class="col-xs-10 col-xs-offset-1 col-sm-2 col-xs-offset-0 col-lg-2 col-lg-offset-0" 
+    :center="{
+      lat: 1.38, 
+      lng: 103.8}" :zoom="12">
+    </map>
 </template>
 
 <script>

@@ -34,7 +34,8 @@
         <!-- Profile -->
         <ul v-if="user.authenticated" class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.data.first_name }} <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.data.first_name }}
+          <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a v-link="{ name: 'Profile', params: { userId: user.data.user_id } }">{{ $t('header.user.profile') }}</a></li>
             <li><a v-link="{ name: 'Settings' }">{{ $t('header.user.settings') }}</a></li>
@@ -82,13 +83,31 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .navbar-brand {
   img {
     width: 140px;
     height: 100%;
   }
 }
+
+/*
+.avatar {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+}
+
+<img class="avatar img-responsive img-circle" alt="Brand" src="/static/2016_09_27_bcd9ccf409332dad35b4517ef9904e63db2188b9_black_white_striped.png">
+
+.dropdown {
+  a {
+    display: inline-block;
+    // padding: 5px;
+  }
+}
+
+*/
 
 h1 {
   color: #42b983;
