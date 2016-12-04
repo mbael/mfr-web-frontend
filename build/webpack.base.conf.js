@@ -26,12 +26,12 @@ module.exports = {
   },
   module: {
     preLoaders: [
-      {
+      /*{
         test: /\.vue$/,
         loader: 'eslint',
         include: projectRoot,
         exclude: /node_modules/
-      },
+      },*/
       {
         test: /\.js$/,
         loader: 'eslint',
@@ -81,5 +81,10 @@ module.exports = {
   },
   vue: {
     loaders: utils.cssLoaders()
-  }
+  },
+  externals: {
+    facebook: 'window.FB', // add facebook sdk
+    google: 'window.google',
+    jquery: 'window.$',
+  },
 }

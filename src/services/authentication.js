@@ -1,38 +1,53 @@
 export default {
   authenticated: false,
   data: false,
-  login: function login(context, credentials) {
-    return new Promise((resolve, reject) => {
-      context
-        .post('http://localhost:2000/v1/user', credentials)
-        .then((response) => {
-          const token = response.body.access_token;
+  login(context, credentials) {
+    return context.$http
+      .post('http://mfr.bael.me/v1/user', credentials)
+      .then((response) => {
+        const token = response.data.accessToken;
 
-          /* set authenticated status true */
-          localStorage.setItem('access_token', token);
-          this.authenticated = true;
+        // set authenticated status true
+        localStorage.setItem('accessToken', token);
 
-          resolve();
-        })
-        .catch((response) => {
-          reject(response.status);
-        });
-    });
+        this.authenticated = true;
+
+        return response;
+      });
   },
-  logout: function logOut() {
-    localStorage.removeItem('access_token');
+  loginWithFacebook(context, data) {
+    return context.$http
+      .post('http://mfr.bael.me/v1/user/facebook', data)
+      .then((response) => {
+        const token = response.data.accessToken;
 
+        // set authenticated status true
+        localStorage.setItem('accessToken', token);
+
+        this.authenticated = true;
+
+        return response;
+      });
+  },
+  logout() {
+    localStorage.setItem('accessToken', null);
+
+    this.data = null;
     this.authenticated = false;
   },
-  checkState: function checkState() {
-    const jwt = localStorage.getItem('access_token');
+  isAuthenticated() {
+    const jwt = localStorage.getItem('accessToken');
 
-    if (jwt) {
+    // note: https://bugzilla.mozilla.org/show_bug.cgi?id=538142
+    if (jwt !== null) {
       this.authenticated = true;
       return true;
     }
 
     this.authenticated = false;
     return false;
+  },
+  getToken() {
+    return localStorage.getItem('accessToken');
   },
 };

@@ -1,89 +1,107 @@
 <template>
-<header>
-  <nav class="navbar navbar-default navbar-static-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" v-link="'/'">
-          <img class="img-responsive" alt="Brand" src="../../assets/logo.png">
-        </a>
-      </div>
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <form class="navbar-form navbar-left">
-          <div class="form-group">
-            <typeahead :data="runs" :on-hit="runSelect">
-            </typeahead>
-          </div>
-          <button type="submit" class="btn btn-default">
-          <icon name="search"></icon></button>
-        </form>
-        <!-- Login / Signup -->
-        <form v-if="!user.authenticated" class="navbar-form navbar-right">
-          <button v-link="{ name: 'Login' }" type="submit" class="btn btn-primary">
-          {{ $t('header.login') }}
+  <header>
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
           </button>
-          <button v-link="{ name: 'Signup' }" type="submit" class="btn btn-primary">
-          {{ $t('header.signup') }}
-          </button>
-        </form>
-        <!-- Profile -->
-        <ul v-if="user.authenticated" class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.data.first_name }}
-          <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a v-link="{ name: 'Profile', params: { userId: user.data.user_id } }">{{ $t('header.user.profile') }}</a></li>
-            <li><a v-link="{ name: 'Settings' }">{{ $t('header.user.settings') }}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a @click="logout">{{ $t('header.user.logout') }}</a></li>
-          </ul>
-        </li>
-      </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>
-</header>
+          <a class="navbar-brand" v-link="'/'">
+            <img class="img-responsive" alt="Brand" src="../../assets/logo.png">
+          </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <form class="navbar-form navbar-left">
+            <div class="form-group">
+              <typeahead :placeholder="$t('header.search')" :data.sync="searchData" :template-name.sync="templateName" :template.sync="customTemplate" :on-hit="runSelect" match-start="false">
+              </typeahead>
+            </div>
+          </form>
+          <profile-bar></profile-bar>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+  </header>
 </template>
 
 <script>
+import Promise from 'bluebird';
+import _ from 'lodash';
 import Icon from 'vue-awesome';
+import ProfileBar from '../layout/profile-bar.vue';
 import {
   typeahead,
 } from 'vue-strap';
-import auth from '../../services/authentication.js';
+
+import AuthService from '../../services/authentication.js';
+import UsersService from '../../services/users.js';
+import RacesService from '../../services/races.js';
 
 export default {
   data() {
     return {
-      // note: changing this line won't causes changes
-      // with hot-reload because the reloaded component
-      // preserves its current state and we are modifying
-      // its initial state.
-      msg: 'Hello World!',
-      runs: ['Mór Fit Run', 'Sziget Fit Run'],
-      user: auth,
+      searchData: [],
+      auth: AuthService,
+      users: [],
+      races: [],
+      templateName: 'custom',
+      customTemplate: '<i class="fa fa-user" aria-hidden="true"></i><span style="margin-left: 5px;" v-html="item | highlight query"></span>',
     };
   },
+  activate(done) {
+    const self = this;
+    done();
+
+    return Promise.all([UsersService.get(this), RacesService.get(this)])
+      .then(([users, races]) => {
+        this.users = users.data;
+        this.races = races.data;
+
+        _.each(users.data, (user) => {
+          self.searchData.push(`${user.firstName} ${user.lastName}`);
+        });
+
+        _.each(races.data, (race) => {
+          self.searchData.push(`${race.title}`);
+        });
+
+        done();
+      });
+  },
   components: {
-    Icon, typeahead, auth,
+    Icon, typeahead, AuthService, ProfileBar,
   },
   methods: {
-    runSelect: () => {
-      // alert('OK');
+    runSelect(selected) {
+      if (selected === 'Mór Fit Run') {
+        this.$router.go({
+          name: 'Run',
+          params: {
+            runId: '581732ad85e86a297fe65205',
+          },
+        });
+      }
+      if (selected === 'Balázs Mócsai') {
+        this.$router.go({
+          name: 'Profile',
+          params: {
+            userId: '581b89938d42173e4d24a9e9',
+          },
+        });
+      }
     },
     logout: () => {
-      auth.logout();
+      AuthService.logout();
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+
 .navbar-brand {
   img {
     width: 140px;

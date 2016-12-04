@@ -1,167 +1,210 @@
 <template>
-<!-- Alert messages -->
-<alert :show.sync="alertState.success" placement="top-right" duration="2000" type="success" width="300px" dismissable>
-  <span class="icon-ok-circled alert-icon-float-left"></span>
-  <strong>{{ $t('signup.success.header') }}</strong>
-  <p>{{ $t('signup.success.body') }}</p>
-</alert>
-<alert :show.sync="alertState.error" placement="top-right" duration="2000" type="danger" width="300px" dismissable>
-  <span class="icon-ok-circled alert-icon-float-left"></span>
-  <strong>{{ $t('signup.error.header') }}</strong>
-  <p>{{ $t('signup.error.body') }}</p>
-</alert>
-<!-- -->
-<div class="container-fluid">
-  <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
-    <validator name="validation">
-    <form>
+  <!-- ALERT -->
+  <alert :show.sync="alert.enabled" :type.sync="alert.style" placement="top-right" duration="2000" width="300px" dismissable>
+    <!-- CONFLICT -->
+    <template v-if="alert.type === 0">
+      <strong>{{ $t('signup.conflict.header') }}</strong>
+      <p>{{ $t('signup.conflict.body') }}</p>
+    </template>
+    <!-- ERROR -->
+    <template v-if="alert.type === 1">
+      <strong>{{ $t('signup.error.header') }}</strong>
+      <p>{{ $t('signup.error.body') }}</p>
+    </template>
+  </alert>
+  <!-- CONTAINER -->
+  <div class="container-fluid">
+    <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
       <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">{{ $t('signup.title') }}</h3>
-        </div>
-        <div class="panel-body">
-          <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">
-                <i class="fa fa-user" aria-hidden="true"></i>
-            </span>
-            <input id="firstname" v-model="form.first_name"
-              type="text" class="form-control" placeholder="{{ $t('signup.first_name') }}" aria-describedby="basic-addon1" required>
+        <form-group :valid.sync="valid.all">
+          <!-- HEADER -->
+          <div class="panel-heading">
+            <h3 class="panel-title">{{ $t('signup.title') }}</h3>
           </div>
-          <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">
-                <i class="fa fa-user" aria-hidden="true"></i>
-            </span>
-            <input v-model="form.last_name" type="text" class="form-control" placeholder="{{ $t('signup.last_name') }}" aria-describedby="basic-addon1" required>
-          </div>
-          <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">
-              <i class="fa fa-envelope-o" aria-hidden="true"></i>
-            </span>
-            <input v-model="form.email" type="text" class="form-control" placeholder="{{ $t('signup.email') }}" aria-describedby="basic-addon1" required>
-          </div>
-          <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">
-                <i class="fa fa-key" aria-hidden="true"></i>
-            </span>
-            <input v-model="form.password" type="password" class="form-control" placeholder="{{ $t('signup.password') }}" aria-describedby="basic-addon1" required>
-          </div>
-          <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">
-                <i class="fa fa-key" aria-hidden="true"></i>
-            </span>
-            <input v-model="form.password_again" type="password" class="form-control" placeholder="{{ $t('signup.password_again') }}" aria-describedby="basic-addon1"required>
-          </div>
-          <div class="input-group">
-            <span class="input-group-addon">
-              <i class="fa fa-calendar" aria-hidden="true"></i>
-            </span>
-            <datepicker :value.sync="form.birth_date" format="MM/dd/yyyy" :placeholder="{{ $t('signup.birth_date') }}">
-            </datepicker>
-          </div>
-          <div class="input-group">
-            <label class="radio-inline"><input value='Female' v-model="form.gender" type="radio" name="optradio">{{ $t('signup.female') }}</label>
-            <label class="radio-inline"><input value='Male' v-model="form.gender" type="radio" name="optradio">{{ $t('signup.male') }}</label>
-          </div>
-        </div>
-        <div class="panel-footer">
-          <div class="form-group">
-            <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-default pull-right" @click="sendForm">{{ $t('signup.button') }}</button>
+          <!-- BODY -->
+          <div class="panel-body">
+            <!-- FIRST NAME -->
+            <form-group :valid.sync="valid.firstName">
+              <input-box :value.sync="firstName" :label="$t('signup.firstName')" type="text" required :placeholder="$t('signup.firstName')">
+                <span slot="before" class="input-group-addon" id="basic-addon1">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                </span>
+              </input-box>
+            </form-group>
+            <!-- LAST NAME -->
+            <form-group :valid.sync="valid.lastName">
+              <input-box :value.sync="lastName" :label="$t('signup.lastName')" type="text" required :placeholder="$t('signup.lastName')">
+                <span slot="before" class="input-group-addon" id="basic-addon1">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                </span>
+              </input-box>
+            </form-group>
+            <!-- EMAIL -->
+            <form-group :valid.sync="valid.email">
+              <input-box :value.sync="email" :label="$t('signup.email')" type="email" required :placeholder="$t('signup.email')">
+                <span slot="before" class="input-group-addon" id="basic-addon1">
+                  <i class="fa fa-envelope" aria-hidden="true"></i>
+                </span>
+              </input-box>
+            </form-group>
+            <!-- PASSWORD -->
+            <form-group :valid.sync="valid.password">
+              <input-box :value.sync="password" :label="$t('signup.password')" type="password" required :placeholder="$t('signup.password')">
+                <span slot="before" class="input-group-addon" id="basic-addon1">
+                  <i class="fa fa-key" aria-hidden="true"></i>
+                </span>
+              </input-box>
+            </form-group>
+            <!-- PASSWORD AGAIN -->
+            <form-group :valid.sync="valid.passwordAgain">
+              <input-box :value.sync="passwordAgain" :label="$t('signup.passwordAgain')" type="password" required :placeholder="$t('signup.passwordAgain')">
+                <span slot="before" class="input-group-addon" id="basic-addon1">
+                  <i class="fa fa-key" aria-hidden="true"></i>
+                </span>
+              </input-box>
+            </form-group>
+            <!-- BIRTH DATE -->
+            <div class="form-group">
+              <form-group :valid.sync="valid.birthDate">
+                <label class="control-label">{{ $t('signup.birthDate') }}</label>
+                <date-picker :clear-button="true" :value.sync="birthDate" format="yyyy/MM/dd" :placeholder="$t('signup.birthDate')">
+                </date-picker>
+              </form-group>
             </div>
-              <div class="checkbox">
-              <label class="pull-right">
-                <input v-model="form.policy" type="checkbox" required> {{ $t('signup.policy') }}
-              </label>
+            <div class="form-group" role="group" aria-label="...">
+              <button-group :value.sync="gender" type="primary" :valid.sync="valid.gender">
+                <radio value="male">Férfi</radio>
+                <radio value="female">Nő</radio>
+              </button-group>
+            </div>
+          </div>
+          <!-- FOOTER -->
+          <div class="panel-footer">
+            <div class="btn-group pull-left" role="group" aria-label="...">
+              <button :disabled="!valid.all" type="button" class="btn btn-default pull-right" @click="signup">{{ $t('signup.button') }}</button>
+            </div>
+            <div class="form-group pull-right" role="group" aria-label="...">
+              <form-group :valid.sync="valid.policy">
+                <check-box :checked.sync="policy" type="info">{{ $t('signup.policy') }}</check-box>
+              </form-group>
             </div>
             <div class="clearfix"></div>
-        </div>
+          </div>
+        </form-group>
       </div>
-    </form>
-    </validator>
+    </div>
   </div>
-</div>
 </template>
+
 <script>
 import {
-  datepicker,
+  radio,
+  buttonGroup,
+  datepicker as datePicker,
   alert,
-  popover,
+  formGroup,
+  checkbox as checkBox,
+  input as inputBox,
 } from 'vue-strap';
+import UsersService from '../../services/users.js';
 
 export default {
+  name: 'Signup',
   data() {
     return {
-      form: {
-        first_name: '',
-        last_name: '',
-        email: '',
-        password: '',
-        password_again: '',
-        birth_date: '',
-        gender: '',
-        policy: '',
+      // data bind
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      passwordAgain: '',
+      birthDate: '',
+      gender: '',
+      policy: '',
+
+      // alert
+      alert: {
+        enabled: false,
+        style: '',
+        type: '',
       },
 
-      alertState: {
-        success: false,
-        error: false,
-        warning: false,
-      },
-      alert: {
-        type: 'success',
+      // validation
+      valid: {
+        all: false,
+        firstName: false,
+        lastName: false,
+        email: false,
+        password: false,
+        passwordAgain: false,
+        birthDate: false,
       },
     };
   },
   components: {
-    datepicker,
-    alert,
-    popover,
+    datePicker, alert, formGroup, inputBox, checkBox, radio, buttonGroup,
+  },
+  watch: {
+    birthDate(value) {
+      // check for validation
+      if (value === '') {
+        this.valid.birthDate = false;
+      } else {
+        this.valid.birthDate = true;
+      }
+      console.log(value);
+    },
   },
   methods: {
-    sendForm: function sendSignupForm() {
-      const newUser = this.form;
+    signup() {
+      const data = {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        password: this.password,
+        birthDate: this.birthDate,
+        gender: this.gender,
+      };
 
-      delete newUser.password_again;
-      delete newUser.policy;
-
-      const self = this;
-
-      this.$http
-        .post('http://mfr.bael.me:80/v1/users', newUser)
+      UsersService
+        .create(this, data)
         .then((response) => {
           console.log(response);
-          this.alertState.success = true;
-
-          setTimeout(() => {
-            self.$router.go('/login');
-          }, 1000);
         })
         .catch((error) => {
           console.log(error);
-          this.alertState.error = true;
         });
+    },
+    setAlert(type, style) {
+      // param check
+      if (type === '' || !style) return false;
+      // set up props
+      this.alert.enabled = true;
+      this.alert.type = type;
+      this.alert.style = style;
+
+      return true;
     },
   },
 };
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
+
+.form-group, .btn-group {
+  margin: 8px;
+}
 
 div.datepicker {
   display:block;
   width: 100%;
 }
 
-div.datepicker > input.form-control {
-    width:100% !important;
-}
-
 .button 
 svg {
   width: 13px; /* width bug if svg inline icons are next to each other */
 }
-.input-group, .btn-group, p {
-  margin: 8px;
-}
+
 h1 {
   color: #42b983;
 }

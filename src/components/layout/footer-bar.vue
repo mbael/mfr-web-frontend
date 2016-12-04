@@ -7,9 +7,15 @@
           <form class="navbar-form navbar-left">
             <ul class="list-group">
               <li class="list-group-item disabled">About us</li>
-              <li class="list-group-item">What is Mór Fit Run?</li>
-              <li class="list-group-item">How it works?</li>
-              <li class="list-group-item">Mobile app</li>
+              <a v-link="{ name: 'Who' }">
+                <li class="list-group-item">What is Mór Fit Run?</li>
+              </a>
+              <a v-link="{ name: 'How' }">
+                <li class="list-group-item">How it works?</li>
+              </a>
+              <a v-link="{ name: 'Application' }">
+                <li class="list-group-item">Mobile app</li>
+              </a>
             </ul>
           </form>
           <form class="navbar-form navbar-left">
@@ -25,8 +31,8 @@
           <form class="navbar-form navbar-left">
             <ul class="list-group">
               <li class="list-group-item disabled">International</li>
-              <li class="list-group-item">English</li>
-              <li class="list-group-item">Magyar</li>
+              <li class="list-group-item" @click="changeLanguage('en')">English</li>
+              <li class="list-group-item" @click="changeLanguage('hu')">Magyar</li>
             </ul>
           </form>
           <form class="navbar-form navbar-right">
@@ -63,15 +69,15 @@ import Icon from 'vue-awesome';
 export default {
   data() {
     return {
-      // note: changing this line won't causes changes
-      // with hot-reload because the reloaded component
-      // preserves its current state and we are modifying
-      // its initial state.
-      msg: 'Hello World!',
     };
   },
   components: {
     Icon,
+  },
+  methods: {
+    changeLanguage(lang) {
+      this.$locale.change(lang);
+    },
   },
 };
 </script>

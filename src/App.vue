@@ -1,9 +1,9 @@
 <template>
-    <header-bar></header-bar>
-    <main>
-      <router-view></router-view>
-    </main>
-    <footer-bar></footer-bar>
+  <header-bar></header-bar>
+  <main>
+    <router-view></router-view>
+  </main>
+  <footer-bar></footer-bar>
 </template>
 
 <script>
@@ -29,8 +29,12 @@ export default {
 <style lang="scss">
 body {
   display: flex;
+  min-height: 100vh;
   flex-direction: column;
-  height: 100%;
+}
+
+main {
+  flex: 1;
 }
 
 html {
