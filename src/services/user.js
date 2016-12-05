@@ -14,4 +14,16 @@ export default {
   uploadAvatar(context, data) {
     return context.$http.post('http://mfr.bael.me/v1/user/avatar', data);
   },
+  followRace(context, raceId) {
+    return context.$http.post('http://127.0.0.1:2000/v1/user/follow', {
+      raceId,
+    });
+  },
+  unfollowRace(context, raceId) {
+    return context.$http.delete('http://127.0.0.1:2000/v1/user/follow', {
+      body: {
+        raceId,
+      },
+    });
+  },
 };

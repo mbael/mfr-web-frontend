@@ -30,4 +30,14 @@ export default {
       },
     });
   },
+  removeRunner(context, runId) {
+    return context.$http.delete('http://mfr.bael.me/v1/runs/{runId}/runners', {
+      params: {
+        runId,
+      },
+    });
+  },
+  end() {
+
+  },
 };

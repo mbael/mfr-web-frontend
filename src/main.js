@@ -8,13 +8,22 @@ import VueHead from 'vue-head';
 import VueValidator from 'vue-validator';
 import VueTables from 'vue-tables';
 import VueMoment from 'vue-moment';
+import Vuex from 'vuex';
+import Raven from 'raven-js';
+import RavenVue from 'raven-js/plugins/vue';
 // import _ from 'lodash';
-
 import configRouter from './router.js';
 import locales from './locales.js';
 
 window.Vue = Vue;
 
+// error handler
+Raven
+    .config('https://8ba2ec072d794384804002a862777cd2@sentry.io/119516')
+    .addPlugin(RavenVue, Vue)
+    .install();
+
+Vue.use(Vuex);
 Vue.use(VueI18n);
 Vue.use(VueValidator);
 Vue.use(VueResource);

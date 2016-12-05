@@ -5,7 +5,7 @@
     </div>
     <race-list @join="joinRace" @leave="leaveRace" :races.sync="races" :joined-races.sync="joinedRaces" :next-runs.sync="raceIdsWithNextRun" :user.sync="user"></race-list>
     <side-bar class="runs-sidebar" v-show="map.loaded" @select="selectRace" :nextRuns.sync="raceIdsWithNextRun" :races.sync="races"></side-bar>
-    <info-window class="runs-infowindow" v-show="infoWindow.active" @join="joinRace" @leave="leaveRace" @follow="followRace" @unfollow="unfollowRace" @favourite="favouriteRace" @unfavourite="unfavouriteRace" :next-run.sync="raceIdsWithNextRun[selectedRace._id]" :selected-race.sync="selectedRace" :joined-races="joinedRaces">
+    <info-window class="runs-infowindow" v-show="infoWindow.active" @join="joinRace" @leave="leaveRace" @follow="followRace" @unfollow="unfollowRace" @favourite="favouriteRace" @unfavourite="unfavouriteRace" :next-run.sync="raceIdsWithNextRun[selectedRace._id]" :selected-race.sync="selectedRace" :joined-races.sync="joinedRaces" :followed-races.sync="followedRaces">
     </info-window>
   </div>
 </template>
@@ -13,7 +13,8 @@
 <script>
 import SideBar from '../races/side-bar/index.vue';
 import InfoWindow from '../races/info-window.vue';
-import RaceList from '../races/race-list.vue';
+import RaceList from '../races/RaceList/Index.vue';
+import RunService from '../../services/runs.js';
 import RacesService from '../../services/races.js';
 import UserService from '../../services/user.js';
 
@@ -30,12 +31,12 @@ export default {
   name: 'Races',
   data() {
     return {
-      test: 'pelda',
       user: {},
       races: [],
       runs: [],
       raceIdsWithNextRun: {},
       joinedRaces: [],
+      followedRaces: [],
       runsGroupedByRaceId: {},
       map: {
         center: {
@@ -69,6 +70,7 @@ export default {
           .then(({ data }) => {
             // set logged user data in vm
             this.user = data;
+            this.followedRaces = data.followed;
           })
           // resolve when error too
           .catch(() => Promise.resolve());
@@ -247,20 +249,42 @@ export default {
     },
     joinRace({ _id: raceId }) {
       const runId = this.raceIdsWithNextRun[raceId]._id;
-      this.joinedRaces.push(raceId);
-      /*
+
       return RunService
         .addRunner(this, runId)
         .then(({ data }) => {
-
-        });*/
+          this.joinedRaces.push(raceId);
+        })
+        .catch(() => {
+          // TODO: erroralert
+        });
     },
     leaveRace({ _id: raceId }) {
       const runId = this.raceIdsWithNextRun[raceId]._id;
-      this.joinedRaces.$remove(raceId);
+      return RunService
+        .removeRunner(this, runId)
+        .then(({ data }) => {
+          this.joinedRaces.$remove(raceId);
+        })
+        .catch(() => {
+          // TODO: erroralert
+        });
     },
-    followRace() {
-       alert(this.selectedRace.title);
+    followRace({ _id: raceId }) {
+      return UserService
+        .followRace(this, raceId)
+        .then(() => {
+          this.followedRaces.push(raceId);
+        })
+        .cath();
+    },
+    unfollowRace({ _id: raceId }) {
+      return UserService
+        .unfollowRace(this, raceId)
+        .then(() => {
+          this.followedRaces.$remove(raceId);
+        })
+        .catch();
     },
     favouriteRace() {
        alert(this.selectedRace.title);

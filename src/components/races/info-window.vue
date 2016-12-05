@@ -36,7 +36,8 @@
     </div>
     <div class="row">
       <div class="follow col-md-6">
-        <button type="button" @click="follow(selectedRace)" class="btn btn-default">{{ $t('races.infowindow.follow') }}</button>
+        <button type="button" v-show="!followedRaces.includes(selectedRace._id)" @click="follow(selectedRace)" class="btn btn-default">{{ $t('races.infowindow.follow') }}</button>
+        <button type="button" v-show="followedRaces.includes(selectedRace._id)" @click="unfollow(selectedRace)" class="btn btn-default">{{ $t('races.infowindow.unfollow') }}</button>
       </div>
       <div class="favourite col-md-6">
         <button type="button" @click="favourite(selectedRace)" class="btn btn-default">{{ $t('races.infowindow.favourite') }}</button>
@@ -64,6 +65,9 @@ export default {
     follow(selectedRace) {
       this.$emit('follow', selectedRace);
     },
+    unfollow(selectedRace) {
+      this.$emit('unfollow', selectedRace);
+    },
     favourite(selectedRace) {
       this.$emit('favourite', selectedRace);
     },
@@ -74,6 +78,10 @@ export default {
       required: true,
     },
     joinedRaces: {
+      type: Array,
+      required: true,
+    },
+    followedRaces: {
       type: Array,
       required: true,
     },

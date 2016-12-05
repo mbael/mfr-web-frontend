@@ -101,6 +101,7 @@ export default {
         join: 'Join',
         leave: 'Leave',
         follow: 'Follow',
+        unfollow: 'Unfollow',
         favourite: 'Favourite',
       },
 
@@ -331,6 +332,7 @@ export default {
         join: 'Csatlakozás',
         leave: 'Kilépés',
         follow: 'Követés',
+        unfollow: 'Kikövetés',
         favourite: 'Kedvenc',
       },
 
