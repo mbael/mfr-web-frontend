@@ -1,12 +1,13 @@
 <template>
   <div class="row">
     <!-- LOGO -->
-    <logo :race.sync="race"></logo>
+    <logo :image.sync="race.logo" :race-title.sync="race.title"></logo>
     <!-- MAP -->
-    <map :map-image="race.mapLogo"></map>
-    <!-- JOIN // PROGRESS -->
+    <map :image.sync="race.mapImage"></map>
+    <!-- DAYS TO RUN - if joined -->
     <days-to-run v-if="joinedRaces.includes(race._id)" :race.sync="race"></days-to-run>
-    <date-of-run v-else :race.sync="race"></date-of-run>
+    <!-- DAYS TO JOIN - if didn't join -->
+    <days-to-join v-else :race.sync="race"></days-to-join>
     <!-- BIB -->
     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-12">
       <div class="panel panel-default">
@@ -35,15 +36,16 @@
 
 <script>
 import DaysToRun from '../RaceList/DaysToRun.vue';
-import DateOfRun from '../RaceList/DaysToJoin.vue';
+import DaysToJoin from '../RaceList/DaysToJoin.vue';
 import Bib from '../RaceList/Bib.vue';
 import Logo from '../RaceList/Logo.vue';
 import Map from '../RaceList/Map.vue';
+import _ from 'lodash';
 
 export default {
   name: 'Row',
   components: {
-    DaysToRun, DateOfRun, Bib, Logo, Map,
+    DaysToRun, DaysToJoin, Bib, Logo, Map,
   },
   data() {
     return {
@@ -61,6 +63,20 @@ export default {
     nextRuns: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    runs() {
+      return this.nextRuns;
+    },
+    raceId() {
+      return this.race._id;
+    },
+    run() {
+      const runs = this.runs;
+      const raceId = this.raceId;
+
+      return runs[raceId];
     },
   },
   methods: {

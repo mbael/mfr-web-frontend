@@ -341,6 +341,7 @@ export default {
         join: 'Csatlakozás',
 
         leave: 'Kilépés',
+
       },
     },
     resetPassword: {

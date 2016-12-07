@@ -3,7 +3,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="runs-map"></div>
     </div>
-    <race-list @join="joinRace" @leave="leaveRace" :races.sync="races" :joined-races.sync="joinedRaces" :next-runs.sync="raceIdsWithNextRun" :user.sync="user"></race-list>
+    <race-list @join="joinRace" @leave="leaveRace" :races-b.sync="racesb" :races.sync="races" :joined-races.sync="joinedRaces" :next-runs.sync="raceIdsWithNextRun" :user.sync="user"></race-list>
     <side-bar class="runs-sidebar" v-show="map.loaded" @select="selectRace" :nextRuns.sync="raceIdsWithNextRun" :races.sync="races"></side-bar>
     <info-window class="runs-infowindow" v-show="infoWindow.active" @join="joinRace" @leave="leaveRace" @follow="followRace" @unfollow="unfollowRace" @favourite="favouriteRace" @unfavourite="unfavouriteRace" :next-run.sync="raceIdsWithNextRun[selectedRace._id]" :selected-race.sync="selectedRace" :joined-races.sync="joinedRaces" :followed-races.sync="followedRaces">
     </info-window>
@@ -31,6 +31,7 @@ export default {
   name: 'Races',
   data() {
     return {
+      racesb: [],
       user: {},
       races: [],
       runs: [],
@@ -133,6 +134,12 @@ export default {
           const goodRun = _.find(runs, ({ date }) => date === sortedAr[0]);
           // set
           this.raceIdsWithNextRun[raceId] = goodRun;
+
+          _.forEach(this.races, (race, index) => {
+            const raceMod = race;
+            raceMod.nextRun = goodRun;
+            this.races.$set(index, raceMod);
+          });
         });
       };
 

@@ -2,10 +2,10 @@
   <div class="col-xs-12 col-sm-12 col-md-3 col-lg-12">
     <div class="panel panel-default">
       <div class="panel-body">
-        <img class="img-responsive" v-bind:src="'/uploads/' + race.logo">
+        <img class="img-responsive" v-bind:src="'/uploads/' + image">
       </div>
       <div class="panel-footer text-center">
-        <h5>{{ race.title }}</h5>
+        <h5>{{ raceTitle }}</h5>
       </div>
     </div>
   </div>
@@ -19,8 +19,12 @@ export default {
     };
   },
   props: {
-    race: {
-      type: Object,
+    image: {
+      type: String,
+      required: true,
+    },
+    raceTitle: {
+      type: String,
       required: true,
     },
   },
